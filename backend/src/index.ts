@@ -2,10 +2,10 @@ import express from "express";
 import cors from "cors";
 import "dotenv/config";
 import "express-async-errors";
-import connectDB from "./config/database.js";
-import authRoutes from "./routes/auth.js";
-import productRoutes from "./routes/products.js";
-import orderRoutes from "./routes/orders.js";
+import connectDB from "./config/database.ts";
+import authRoutes from "./routes/auth.ts";
+import productRoutes from "./routes/products.ts";
+import orderRoutes from "./routes/orders.ts";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
