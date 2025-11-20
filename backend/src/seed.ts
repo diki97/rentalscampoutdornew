@@ -1,4 +1,4 @@
-"import "dotenv/config";
+import "dotenv/config";
 import connectDB from "./config/database.js";
 import Product from "./models/Product.js";
 import User from "./models/User.js";
@@ -8,7 +8,7 @@ const seedProducts = [
     name: "Tenda Kapasitas 4 Orang",
     category: "Tenda & Shelter",
     description:
-      "Tenda berkualitas tinggi dengan kapasitas 4 orang, tahan air dan mudah dipasang. Cocok untuk camping keluarga.\",
+      "Tenda berkualitas tinggi dengan kapasitas 4 orang, tahan air dan mudah dipasang. Cocok untuk camping keluarga.",
     price: 75000,
     stock: 10,
     capacity: "4 orang",
@@ -44,7 +44,7 @@ const seedProducts = [
     name: "Carrier 60L",
     category: "Tas Carrier",
     description:
-      "Tas carrier 60 liter dengan sistem suspension nyaman, banyak kompartemen dan rain cover.\",
+      "Tas carrier 60 liter dengan sistem suspension nyaman, banyak kompartemen dan rain cover.",
     price: 40000,
     stock: 12,
     capacity: "60L",
@@ -186,13 +186,12 @@ async function seedDatabase() {
 
     console.log("🗑️  Menghapus data lama...");
     await Product.deleteMany({});
-    await User.deleteMany({ role: "customer" }); // Hanya hapus customer, biarkan admin
+    await User.deleteMany({ role: "customer" });
 
     console.log("🌱 Seeding products...");
     await Product.insertMany(seedProducts);
     console.log(`✅ ${seedProducts.length} produk berhasil ditambahkan`);
 
-    // Create test customer
     const testCustomer = new User({
       email: "customer@test.com",
       password: "password123",
@@ -203,12 +202,9 @@ async function seedDatabase() {
       isVerified: true,
     });
     await testCustomer.save();
-    console.log("✅ Test customer berhasil dibuat (customer@test.com / password123)");
 
-    console.log("
-🎉 Database seeding selesai!");
-    console.log("
-📝 Akun untuk testing:");
+    console.log("🎉 Database seeding selesai!");
+    console.log("📝 Akun untuk testing:");
     console.log("   Admin: admin / admin123");
     console.log("   Customer: customer@test.com / password123");
 
@@ -220,4 +216,3 @@ async function seedDatabase() {
 }
 
 seedDatabase();
-"
