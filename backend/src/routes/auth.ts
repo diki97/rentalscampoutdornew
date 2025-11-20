@@ -1,5 +1,5 @@
 import express, { Response } from "express";
-import jwt from "jsonwebtoken";
+import jwt, { SignOptions } from "jsonwebtoken";
 import User from "../models/User.js";
 import { AuthRequest, verifyToken } from "../middleware/auth.js";
 
@@ -17,7 +17,6 @@ router.post("/admin/login", async (req: AuthRequest, res: Response) => {
       });
     }
 
-    // Check if admin credentials match environment variables
     if (
       username === process.env.ADMIN_USERNAME &&
       password === process.env.ADMIN_PASSWORD
@@ -29,7 +28,7 @@ router.post("/admin/login", async (req: AuthRequest, res: Response) => {
           role: "admin",
         },
         process.env.JWT_SECRET || "",
-        { expiresIn: process.env.JWT_EXPIRE || "7d" },
+        { expiresIn: process.env.JWT_EXPIRE || "7d" } as SignOptions
       );
 
       return res.status(200).json({
@@ -45,7 +44,6 @@ router.post("/admin/login", async (req: AuthRequest, res: Response) => {
       });
     }
 
-    // Also check in database for admin users
     const admin = await User.findOne({ username, role: "admin" });
 
     if (!admin || !(await admin.comparePassword(password))) {
@@ -62,7 +60,7 @@ router.post("/admin/login", async (req: AuthRequest, res: Response) => {
         role: admin.role,
       },
       process.env.JWT_SECRET || "",
-      { expiresIn: process.env.JWT_EXPIRE || "7d" },
+      { expiresIn: process.env.JWT_EXPIRE || "7d" } as SignOptions
     );
 
     res.status(200).json({
@@ -97,7 +95,6 @@ router.post("/customer/register", async (req: AuthRequest, res: Response) => {
       });
     }
 
-    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(409).json({
@@ -106,7 +103,6 @@ router.post("/customer/register", async (req: AuthRequest, res: Response) => {
       });
     }
 
-    // Create new customer
     const newUser = new User({
       email,
       password,
@@ -125,7 +121,7 @@ router.post("/customer/register", async (req: AuthRequest, res: Response) => {
         role: newUser.role,
       },
       process.env.JWT_SECRET || "",
-      { expiresIn: process.env.JWT_EXPIRE || "7d" },
+      { expiresIn: process.env.JWT_EXPIRE || "7d" } as SignOptions
     );
 
     res.status(201).json({
@@ -177,7 +173,7 @@ router.post("/customer/login", async (req: AuthRequest, res: Response) => {
         role: user.role,
       },
       process.env.JWT_SECRET || "",
-      { expiresIn: process.env.JWT_EXPIRE || "7d" },
+      { expiresIn: process.env.JWT_EXPIRE || "7d" } as SignOptions
     );
 
     res.status(200).json({
@@ -202,7 +198,7 @@ router.post("/customer/login", async (req: AuthRequest, res: Response) => {
   }
 });
 
-// Get Current User
+// Me
 router.get("/me", verifyToken, async (req: AuthRequest, res: Response) => {
   try {
     if (req.user?.id === "admin") {
