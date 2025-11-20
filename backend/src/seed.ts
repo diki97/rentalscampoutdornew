@@ -184,15 +184,27 @@ async function seedDatabase() {
   try {
     await connectDB();
 
-    console.log("🗑️  Menghapus data lama...");
+    console.log("🗑️ Menghapus seluruh user & produk lama...");
+    await User.deleteMany({});
     await Product.deleteMany({});
-    await User.deleteMany({ role: "customer" });
 
-    console.log("🌱 Seeding products...");
+    console.log("🌱 Menambahkan produk...");
     await Product.insertMany(seedProducts);
     console.log(`✅ ${seedProducts.length} produk berhasil ditambahkan`);
 
-    const testCustomer = new User({
+    console.log("👑 Membuat akun admin...");
+    await User.create({
+      email: "admin@admin.com",
+      password: "admin123",
+      firstName: "Admin",
+      lastName: "Super",
+      phone: "0800000000",
+      role: "admin",
+      isVerified: true,
+    });
+
+    console.log("👤 Membuat akun customer testing...");
+    await User.create({
       email: "customer@test.com",
       password: "password123",
       firstName: "John",
@@ -201,16 +213,15 @@ async function seedDatabase() {
       role: "customer",
       isVerified: true,
     });
-    await testCustomer.save();
 
-    console.log("🎉 Database seeding selesai!");
-    console.log("📝 Akun untuk testing:");
-    console.log("   Admin: admin / admin123");
-    console.log("   Customer: customer@test.com / password123");
+    console.log("🎉 Seeding selesai!");
+    console.log("\n📝 Akun telah dibuat:");
+    console.log("   Admin    → admin@admin.com / admin123");
+    console.log("   Customer → customer@test.com / password123\n");
 
     process.exit(0);
-  } catch (error) {
-    console.error("❌ Error seeding database:", error);
+  } catch (err) {
+    console.error("❌ Error:", err);
     process.exit(1);
   }
 }
